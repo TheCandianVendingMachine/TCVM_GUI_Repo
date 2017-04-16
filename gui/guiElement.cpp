@@ -1,5 +1,13 @@
 #include "guiElement.hpp"
 
+fe::gui::guiElement::guiElement() : m_parentPanel(nullptr), m_parentElement(nullptr)
+    {
+    }
+
+fe::gui::guiElement::guiElement(guiElement *parent) : m_parentPanel(nullptr), m_parentElement(nullptr)
+    {
+    }
+
 void fe::gui::guiElement::setParent(const panel *attached)
     {
         m_parentPanel = attached;

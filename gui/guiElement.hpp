@@ -7,6 +7,7 @@
 namespace sf
     {
         class RenderTarget;
+        class Drawable;
         class Event;
     }
 
@@ -20,9 +21,13 @@ namespace fe
                     {
                         protected:
                             const panel *m_parentPanel; // the panel this gui element is attached to.
+                            guiElement *m_parentElement;
                             fe::Vector2d m_size;
 
                         public:
+                            guiElement();
+                            guiElement(guiElement *parent);
+
                             void setParent(const panel *attached);
 
                             void setSize(const fe::Vector2d &size);

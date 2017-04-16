@@ -28,7 +28,12 @@ void fe::gui::button::update()
 
 void fe::gui::button::draw(sf::RenderTarget &target)
     {
-        auto &matrix = getMatrix();
+        fe::matrix3d matrix = getMatrix();
+        if (m_parentElement)
+            {
+                matrix *= m_parentElement->getMatrix();
+            }
+
         m_shape[0].position = matrix.transformPoint({0.f, 0.f}).convertToSfVec2();
         m_shape[1].position = matrix.transformPoint({m_size.x, 0.f}).convertToSfVec2();
         m_shape[2].position = matrix.transformPoint({m_size.x, m_size.y}).convertToSfVec2();
