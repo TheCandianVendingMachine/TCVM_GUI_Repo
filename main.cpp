@@ -1,6 +1,7 @@
 // SFML_TEMPLATE
 // template for any SFML project
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "gui/panel.hpp"
 
 int main()
@@ -9,7 +10,9 @@ int main()
         app.setFramerateLimit(120);
 
         fe::gui::panel panel({ 200, 200 });
-        panel.setOrigin({ 100, 100 });
+        panel.setPosition({ 100, 100 });
+
+        panel.scale({ 2, 5 });
 
         const float deltaTime = 1.f / 60.f;
 
@@ -38,18 +41,9 @@ int main()
                                 default:
                                     break;
                             }
-                    }
 
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-                    {
-                        panel.setSize({ 60, 60 });
+                        panel.handleEvent(eve);
                     }
-                else if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                    {
-                        panel.rotate(1_Deg);
-                    }
-
-                panel.setPosition(fe::Vector2d(sf::Mouse::getPosition(app).x, sf::Mouse::getPosition(app).y));
 
                 while (acc >= deltaTime)
                     {

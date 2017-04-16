@@ -29,7 +29,6 @@ namespace fe
             {
                 typedef float matrix[9];
                 matrix values;
-                fe::Vector2d origin;
 
                 FLAT_ENGINE_API matrix3d();
                 FLAT_ENGINE_API matrix3d(float x11, float y12, float z13,

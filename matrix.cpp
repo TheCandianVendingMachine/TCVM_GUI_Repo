@@ -180,13 +180,13 @@ void fe::matrix3d::rotate(float radians)
 
 fe::Vector2d fe::matrix3d::translatePoint(const fe::Vector2d &point) const
     {
-        return fe::Vector2d(values[6] + point.x, values[7] + point.y) - origin;
+        return fe::Vector2d(values[6] + point.x, values[7] + point.y);
     }
 
 fe::Vector2d fe::matrix3d::rotatePoint(const fe::Vector2d &point) const
     {
-        return fe::Vector2d((point.x - origin.x) * values[0] + (point.y - origin.y) * values[1],
-                            (point.x - origin.x) * values[3] + (point.y - origin.y) * values[4]);
+        return fe::Vector2d(point.x * values[0] + point.y * values[1],
+                            point.x * values[3] + point.y * values[4]);
     }
 
 fe::Vector2d fe::matrix3d::rotatePoint(const fe::Vector2d &point, float radians) const
@@ -199,9 +199,9 @@ fe::Vector2d fe::matrix3d::rotatePoint(const fe::Vector2d &point, float radians)
 fe::Vector2d fe::matrix3d::transformPoint(const fe::Vector2d &point) const
     {
         fe::Vector2d transformed = point;
-        transformed = translatePoint(transformed);
         transformed = rotatePoint(transformed);
-
+        transformed = translatePoint(transformed);
+        
         return transformed;
     }
 
