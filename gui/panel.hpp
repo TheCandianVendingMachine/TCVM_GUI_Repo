@@ -1,7 +1,6 @@
 // panel.hpp
 // a "window" for GUI elements. A render texture so we can render to it in one call
 #pragma once
-
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -28,6 +27,7 @@ namespace fe
                     {
                         private:
                             std::vector<guiElement*> m_guiElements;
+                            std::vector<unsigned int> m_guiHandles;
 
                             sf::RenderTexture m_texture;
                             sf::Color m_panelColour;
@@ -41,11 +41,13 @@ namespace fe
                         public:
                             panel(fe::Vector2d size);
 
-                            void addElement(guiElement *element);
-                            void removeElement(guiElement *element);
+                            unsigned int addElement(guiElement *element);
+                            guiElement *getElement(unsigned int handle);
+ 
+                            void removeElement(unsigned int handle);
 
                             bool getMousePressed() const;
-                            bool mouseHover(const fe::Vector2d &position, const fe::Vector2d &size);
+                            bool mouseHover(const fe::Vector2d &position, const fe::Vector2d &size) const;
 
                             void setSize(fe::Vector2d size);
                             fe::Vector2d getSize() const;

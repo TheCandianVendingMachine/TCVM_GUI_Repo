@@ -13,7 +13,10 @@ int main()
         fe::gui::panel panel({ 200, 200 });
         panel.setPosition({ 100, 100 });
 
-        panel.addElement(new fe::gui::button({ 50, 50 }, []() { std::cout << "Pressed!\n"; }));
+        auto handle = panel.addElement(new fe::gui::button({ 50, 50 }, []() { std::cout << "Pressed!\n"; }));
+        panel.getElement(handle)->setPosition({50, 0});
+        panel.removeElement(handle);
+
 
         const float deltaTime = 1.f / 60.f;
 

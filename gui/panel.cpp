@@ -12,14 +12,32 @@ fe::gui::panel::panel(fe::Vector2d size) : m_mousePressed(false), m_size(size), 
         setSize(size);
     }
 
-void fe::gui::panel::addElement(guiElement *element)
+unsigned int fe::gui::panel::addElement(guiElement *element)
     {
         m_guiElements.emplace_back(element);
+        m_guiHandles.push_back(m_guiElements.size() - 1);
+        element->setParent(this);
+
+        return m_guiHandles.size() - 1;
     }
 
-void fe::gui::panel::removeElement(guiElement *element)
+fe::gui::guiElement *fe::gui::panel::getElement(unsigned int handle)
     {
-        m_guiElements.erase(std::remove(m_guiElements.begin(), m_guiElements.end(), element), m_guiElements.end());
+        if (handle >= m_guiHandles.size())
+            {
+                return nullptr;
+            }
+        return m_guiElements[m_guiHandles[handle]];
+    }
+
+void fe::gui::panel::removeElement(unsigned int handle)
+    {
+        if (m_guiHandles.begin() + handle < m_guiHandles.end())
+            {
+                delete *(m_guiElements.begin() + m_guiHandles[handle]);
+                m_guiElements.erase(m_guiElements.begin() + m_guiHandles[handle]);
+                for (auto it = m_guiHandles.begin() + handle; it != m_guiHandles.end(); ++it) { (*it) -= 1; };
+            }
     }
 
 bool fe::gui::panel::getMousePressed() const
@@ -27,7 +45,7 @@ bool fe::gui::panel::getMousePressed() const
         return m_mousePressed;
     }
 
-bool fe::gui::panel::mouseHover(const fe::Vector2d &position, const fe::Vector2d &size)
+bool fe::gui::panel::mouseHover(const fe::Vector2d &position, const fe::Vector2d &size) const
     {
         return m_mousePosition.x - getPosition().x > position.x          && m_mousePosition.y - getPosition().y > position.y &&
                m_mousePosition.x - getPosition().x < position.x + size.x && m_mousePosition.y - getPosition().y < position.y + size.y;
@@ -46,7 +64,7 @@ void fe::gui::panel::setSize(fe::Vector2d size)
         //test.scale(size.x / m_size.x, size.y / m_size.y);
         for (auto &element : m_guiElements)
             {
-                element->scale({size.x / m_size.x, size.y / m_size.y });
+                element->setSize(size - element->getSize());
             }
         m_size = size;
     }
