@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "gui/panel.hpp"
+#include "gui/button.hpp"
 
 int main()
     {
@@ -12,7 +13,7 @@ int main()
         fe::gui::panel panel({ 200, 200 });
         panel.setPosition({ 100, 100 });
 
-        panel.scale({ 2, 5 });
+        panel.addElement(new fe::gui::button({ 50, 50 }, []() { std::cout << "Pressed!\n"; }));
 
         const float deltaTime = 1.f / 60.f;
 
@@ -45,6 +46,7 @@ int main()
                         panel.handleEvent(eve);
                     }
 
+                panel.update();
                 while (acc >= deltaTime)
                     {
                         // update

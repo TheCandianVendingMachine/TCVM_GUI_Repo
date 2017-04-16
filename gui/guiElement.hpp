@@ -19,14 +19,19 @@ namespace fe
                 class guiElement : public fe::transformable
                     {
                         protected:
-                            panel *m_parentPanel; // the panel this gui element is attached to.
+                            const panel *m_parentPanel; // the panel this gui element is attached to.
+                            fe::Vector2d m_size;
 
                         public:
-                            guiElement(panel &attached) : m_parentPanel(&attached) {}
+                            void setParent(const panel *attached);
 
-                            virtual void draw(sf::RenderTarget &target) = 0;
-                            virtual void update() = 0;
+                            void setSize(const fe::Vector2d &size);
+                            const fe::Vector2d &getSize() const;
+
                             virtual void handleEvent(const sf::Event &event) = 0;
+                            virtual void update() = 0;
+                            virtual void draw(sf::RenderTarget &target) = 0;
+                            
                     };
             }
     }
