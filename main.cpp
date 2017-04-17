@@ -10,7 +10,7 @@ int main()
         sf::RenderWindow app(sf::VideoMode(1280, 720), "SFML", sf::Style::Close);
         app.setFramerateLimit(120);
 
-        fe::gui::panel panel({ 200, 200 });
+        fe::gui::panel panel({ 550, 200 }, fe::gui::panelModifiers::CAN_DRAG | fe::gui::panelModifiers::CAN_MINIMIZE | fe::gui::panelModifiers::HAS_TITLE | fe::gui::panelModifiers::CAN_CLOSE, "Hello, World!");
         panel.setPosition({ 100, 100 });
 
         auto handle = panel.addElement(new fe::gui::button({ 50, 50 }, []() { std::cout << "Pressed!\n"; }));
