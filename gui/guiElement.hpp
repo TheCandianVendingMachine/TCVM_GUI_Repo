@@ -24,18 +24,20 @@ namespace fe
                             guiElement *m_parentElement;
                             fe::Vector2d m_size;
 
+                            virtual void drawElement(sf::RenderTarget &target, const fe::matrix3d &matrix) = 0;
+
                         public:
                             guiElement();
-                            guiElement(guiElement *parent);
 
                             void setParent(const panel *attached);
+                            void setParent(guiElement *attached);
 
                             void setSize(const fe::Vector2d &size);
                             const fe::Vector2d &getSize() const;
 
                             virtual void handleEvent(const sf::Event &event) = 0;
                             virtual void update() = 0;
-                            virtual void draw(sf::RenderTarget &target) = 0;
+                            virtual void draw(sf::RenderTarget &target);
                             
                     };
             }

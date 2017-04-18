@@ -4,13 +4,14 @@ fe::gui::guiElement::guiElement() : m_parentPanel(nullptr), m_parentElement(null
     {
     }
 
-fe::gui::guiElement::guiElement(guiElement *parent) : m_parentPanel(nullptr), m_parentElement(nullptr)
-    {
-    }
-
 void fe::gui::guiElement::setParent(const panel *attached)
     {
         m_parentPanel = attached;
+    }
+
+void fe::gui::guiElement::setParent(guiElement *attached)
+    {
+        m_parentElement = attached;
     }
 
 void fe::gui::guiElement::setSize(const fe::Vector2d &size)
@@ -22,4 +23,16 @@ void fe::gui::guiElement::setSize(const fe::Vector2d &size)
 const fe::Vector2d &fe::gui::guiElement::getSize() const
     {
         return m_size;
+    }
+
+void fe::gui::guiElement::draw(sf::RenderTarget &target)
+    {
+        if (m_parentElement)
+            {
+                drawElement(target, m_parentElement->getMatrix());
+            }
+        else
+            {
+                drawElement(target, fe::matrix3d());
+            }
     }

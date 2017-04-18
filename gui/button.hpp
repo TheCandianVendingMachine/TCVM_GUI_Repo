@@ -16,12 +16,13 @@ namespace fe
                             std::function<void()> m_callback;
                             sf::VertexArray m_shape;
 
+                            void drawElement(sf::RenderTarget &target, const fe::matrix3d &matrix);
+
                         public:
                             button(const fe::Vector2d &size, const std::function<void()> &callback);
 
                             void handleEvent(const sf::Event &event);
                             void update();
-                            void draw(sf::RenderTarget &target);
 
                     };
             }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "gui/panel.hpp"
 #include "gui/button.hpp"
+#include "gui/label.hpp"
 
 int main()
     {
@@ -19,6 +20,11 @@ int main()
         panel.setPosition({ 100, 100 });
 
         auto handle = panel.addElement(new fe::gui::button({ 50, 50 }, []() { std::cout << "Pressed!\n"; }));
+        auto text = panel.addElement(new fe::gui::label(abc, "Abc BB"));
+
+        panel.getElement(text)->setParent(panel.getElement(handle));
+
+        panel.getElement(handle)->setPosition({ 550 / 2, 200 / 2 });
 
         const float deltaTime = 1.f / 60.f;
 

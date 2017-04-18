@@ -1,6 +1,18 @@
 #include "button.hpp"
 #include "panel.hpp"
 
+void fe::gui::button::drawElement(sf::RenderTarget &target, const fe::matrix3d &matrix)
+    {
+        fe::matrix3d localMatrix = getMatrix() * matrix;
+
+        m_shape[0].position = localMatrix.transformPoint({0.f, 0.f}).convertToSfVec2();
+        m_shape[1].position = localMatrix.transformPoint({m_size.x, 0.f}).convertToSfVec2();
+        m_shape[2].position = localMatrix.transformPoint({m_size.x, m_size.y}).convertToSfVec2();
+        m_shape[3].position = localMatrix.transformPoint({0.f, m_size.y}).convertToSfVec2();
+
+        target.draw(m_shape);
+    }
+
 fe::gui::button::button(const fe::Vector2d &size, const std::function<void()> &callback) : m_callback(callback)
     {
         m_shape.setPrimitiveType(sf::PrimitiveType::Quads);
@@ -24,20 +36,4 @@ void fe::gui::button::update()
             {
                 m_callback();
             }
-    }
-
-void fe::gui::button::draw(sf::RenderTarget &target)
-    {
-        fe::matrix3d matrix = getMatrix();
-        if (m_parentElement)
-            {
-                matrix *= m_parentElement->getMatrix();
-            }
-
-        m_shape[0].position = matrix.transformPoint({0.f, 0.f}).convertToSfVec2();
-        m_shape[1].position = matrix.transformPoint({m_size.x, 0.f}).convertToSfVec2();
-        m_shape[2].position = matrix.transformPoint({m_size.x, m_size.y}).convertToSfVec2();
-        m_shape[3].position = matrix.transformPoint({0.f, m_size.y}).convertToSfVec2();
-
-        target.draw(m_shape);
     }
