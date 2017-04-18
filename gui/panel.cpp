@@ -5,31 +5,7 @@
 #include <algorithm>
 #include <cstring>
 
-fe::gui::panel::panel(fe::Vector2d size) :
-    m_mousePressed(false),
-    m_size(size),
-    m_panelColour(255, 255, 255),
-    m_isOpen(true),
-    m_canDrag(false),
-    m_canClose(false),
-    m_canMinimize(false),
-    m_dragging(false),
-    m_isFolded(false),
-    m_windowOffset(0.f),
-    m_minSize(30.f, 10.f),
-    m_buttonSize(20.f),
-    m_distanceFromEnd(5.f),
-    m_distanceFromTop(5.f)
-    {
-        m_window.setPrimitiveType(sf::PrimitiveType::Quads);
-        m_window.resize(4);
-
-        std::strcpy(m_title, "");
-
-        setSize(size);
-    }
-
-fe::gui::panel::panel(fe::Vector2d size, int modifiers, const char *title) :
+fe::gui::panel::panel(fe::Vector2d size, int modifiers, const char *title, sf::Font *font) :
     m_mousePressed(false),
     m_size(size),
     m_panelColour(12, 175, 232, 75),
@@ -49,16 +25,12 @@ fe::gui::panel::panel(fe::Vector2d size, int modifiers, const char *title) :
         m_canMinimize |=(modifiers & panelModifiers::CAN_MINIMIZE);
         m_canClose |=   (modifiers & panelModifiers::CAN_CLOSE);
         m_canDrag |=    (modifiers & panelModifiers::CAN_DRAG);
-
-        if (modifiers & panelModifiers::HAS_TITLE)
-            {
-                std::strcpy(m_title, title);
-            }
+        m_hasTitle |=   (modifiers & panelModifiers::HAS_TITLE);
 
         m_window.setPrimitiveType(sf::PrimitiveType::Quads);
         m_window.resize(4);
 
-        if (m_canMinimize || m_canClose || m_canDrag)
+        if (m_canMinimize || m_canClose || m_canDrag || m_hasTitle)
             {
                 m_titleBar.setPrimitiveType(sf::PrimitiveType::Quads);
                 m_titleBar.resize(12);
@@ -84,9 +56,45 @@ fe::gui::panel::panel(fe::Vector2d size, int modifiers, const char *title) :
                         m_titleBar[10].color = sf::Color::Red;
                         m_titleBar[11].color = sf::Color::Red;
                     }
+
+                if (m_hasTitle)
+                    {
+                        char croppedTitle[31];
+                        std::strncpy(croppedTitle, title, 30);
+                        croppedTitle[30] = '\0';
+
+                        m_title.setString(croppedTitle);
+                        m_title.setFillColor(sf::Color::Black);
+                        m_title.setFont(*font);
+
+                        m_title.setCharacterSize((m_windowOffset - 5.f) * (72.f / 96.f));
+                        m_title.setPosition(5, 5);
+
+                        m_titlePosition = m_title.getPosition();
+                    }
             }
 
         setSize(size);
+    }
+
+void fe::gui::panel::setPanelBarColour(sf::Color colour)
+    {
+        m_titleBarColour = colour;
+    }
+
+void fe::gui::panel::setPanelClearColour(sf::Color colour)
+    {
+        m_panelColour = colour;
+    }
+
+sf::Color fe::gui::panel::getPanelBarColour() const
+    {
+        return m_titleBarColour;
+    }
+
+sf::Color fe::gui::panel::getPanelClearColour() const
+    {
+        return m_panelColour;
     }
 
 bool fe::gui::panel::isOpen() const
@@ -237,7 +245,7 @@ void fe::gui::panel::update()
 void fe::gui::panel::draw(sf::RenderTarget &target)
     {
         auto &matrix = getMatrix();
-        if (m_canClose || m_canDrag || m_canMinimize)
+        if (m_canClose || m_canDrag || m_canMinimize || m_hasTitle)
             {
                 m_titleBar[0].position = matrix.transformPoint({ 0.f, 0.f }).convertToSfVec2();
                 m_titleBar[1].position = matrix.transformPoint({ m_size.x, 0.f }).convertToSfVec2();
@@ -262,6 +270,8 @@ void fe::gui::panel::draw(sf::RenderTarget &target)
                         m_titleBar[6].position = matrix.transformPoint({ m_size.x - distanceFromEnd, m_windowOffset - m_distanceFromTop }).convertToSfVec2();
                         m_titleBar[7].position = matrix.transformPoint({ m_size.x - distanceFromEnd - m_buttonSize, m_windowOffset - m_distanceFromTop }).convertToSfVec2();
                     }
+
+                m_title.setPosition(matrix.transformPoint(m_titlePosition).convertToSfVec2());
 
                 m_window[0].position = matrix.transformPoint({ 0.f, m_windowOffset }).convertToSfVec2();
                 m_window[1].position = matrix.transformPoint({ m_size.x, m_windowOffset }).convertToSfVec2();
@@ -291,6 +301,7 @@ void fe::gui::panel::draw(sf::RenderTarget &target)
                 target.draw(m_window, state);
             }
         target.draw(m_titleBar);
+        target.draw(m_title);
     }
 
 void fe::gui::panel::destroy()

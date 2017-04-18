@@ -5,6 +5,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include <vector>
 #include <memory>
@@ -16,6 +17,7 @@ namespace sf
     {
         class RenderTarget;
         class Event;
+        class Font;
     }
 
 namespace fe
@@ -60,17 +62,25 @@ namespace fe
 
                             float m_windowOffset; // the offset of the window from the title bar
 
-                            char m_title[512];  // Window title - what is displayed if active
+                            sf::Text m_title;
+                            fe::Vector2d m_titlePosition;
+
                             bool m_canDrag;     // If we are able to drag the window
                             bool m_canClose;    // If we are able to close and destroy the window
                             bool m_canMinimize; // If we are able to minimize the window
+                            bool m_hasTitle;    // If the panel has the title modifer
 
                             bool m_isOpen;
                             bool m_isFolded;
 
                         public:
-                            panel(fe::Vector2d size);
-                            panel(fe::Vector2d size, int modifiers, const char *title = "\0");
+                            panel(fe::Vector2d size, int modifiers = 0, const char *title = "\0", sf::Font *font = nullptr);
+
+                            void setPanelBarColour(sf::Color colour);
+                            void setPanelClearColour(sf::Color colour);
+
+                            sf::Color getPanelBarColour() const;
+                            sf::Color getPanelClearColour() const;
 
                             // Returns false if the window requests to be closed
                             bool isOpen() const;
